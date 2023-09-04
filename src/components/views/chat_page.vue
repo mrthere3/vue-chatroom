@@ -10,16 +10,18 @@
           'flex flex-row py-4 px-2 justify-center items-center border-b-2': true,
           'bg-red-300': selectedItem === index,
         }" @click="selecteItem(item, index)">
-          <div class="w-1/4">
+          <div class="w-1/4 flex-shrink-0">
             <img src="https://source.unsplash.com/_7LbC5J-jw4/600x600" class="object-cover h-12 w-12 rounded-full"
               alt="" />
           </div>
-          <div class="w-full text-sm font-serif font-medium text-center">
-            <span class="block"> {{ item }} </span>
-            <span class="text-gray-500">Pick me at 9:00 Am</span>
+          <div class="w-3/5 text-lg font-serif font-medium ml-2 text-center">
+            <el-tooltip :disabled="isTooltipVisible" class="box-item" :content="item" placement="bottom">
+              <div class="truncate" @mouseover="showfulltext(index)">
+                <span ref="spanref">{{ item }}</span>
+              </div>
+            </el-tooltip>
           </div>
         </div>
-        <!-- end user list -->
       </div>
       <!-- end chat list -->
       <!-- message -->
@@ -61,12 +63,17 @@ const props = defineProps({
   },
 });
 const prompt = ref("");
-const model_list = ref(["sigma_v16_aigc", "sigma_38b_v16", "sigma_71b_v16"]);
+const model_list = ref([
+  "sigma_v16_aigc",
+  "sigma_38b_v16",
+  "sigma_71b_v16_aigc_猫眼_0824_v15dsadadadsadadsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+]);
 const selectedItem = ref(null);
 const current_model = ref(null);
 const records = ref([]);
 const chatroom = ref(null);
-
+const spanref = ref(null);
+const isTooltipVisible = ref(false);
 async function selecteItem(model_name, index) {
   // 让选择的模型对话框显示高亮 用用户方便识别
   selectedItem.value = index;
@@ -97,5 +104,15 @@ function scrollToBottom() {
   if (chatroom.value) {
     chatroom.value.scrollTop = chatroom.value.scrollHeight;
   }
+}
+
+function showfulltext(index) {
+  const spanrefs = spanref.value[index];
+  if (spanrefs.parentNode.offsetWidth < spanrefs.offsetWidth) {
+    isTooltipVisible.value = true;
+  } else {
+    isTooltipVisible.value = false;
+  }
+  console.log(isTooltipVisible.value);
 }
 </script>
