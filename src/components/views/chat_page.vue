@@ -14,9 +14,9 @@
             <img src="https://source.unsplash.com/_7LbC5J-jw4/600x600" class="object-cover h-12 w-12 rounded-full"
               alt="" />
           </div>
-          <div class="w-3/5 text-lg font-serif font-medium ml-2 text-center">
-            <el-tooltip :disabled="isTooltipVisible" class="box-item" :content="item" placement="bottom">
-              <div class="truncate" @mouseover="showfulltext(index)">
+          <div class="w-3/5 text-lg font-serif font-medium ml-2 text-center" @mouseover="showfulltext(index)">
+            <el-tooltip :disabled="isTooltipVisible != index" class="box-item" :content="item" placement="bottom">
+              <div class="truncate text-center">
                 <span ref="spanref">{{ item }}</span>
               </div>
             </el-tooltip>
@@ -29,7 +29,8 @@
         <div class="flex flex-col mt-5 overflow-y-auto overscroll-contain h-6/10" ref="chatroom">
           <div class="" v-for="(item, index) in records" :key="index">
             <div class="flex justify-end mb-4" v-if="index % 2 == 0">
-              <div class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+              <div @click="copy(item)"
+                class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
                 {{ item }}
               </div>
               <img src="https://source.unsplash.com/vpOeXr5wmR4/600x600" class="object-cover h-8 w-8 rounded-full"
@@ -38,7 +39,8 @@
             <div class="flex justify-start mb-4" v-else>
               <img src="https://source.unsplash.com/_7LbC5J-jw4/600x600" class="object-cover h-8 w-8 rounded-full"
                 alt="" />
-              <div class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+              <div @click="copy(item)"
+                class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
                 {{ item }}
               </div>
             </div>
@@ -56,6 +58,9 @@
 <script setup>
 import { ref, defineProps, onMounted, onUpdated } from "vue";
 import requests from "@/utils/axios";
+import useClipboard from "vue-clipboard3";
+import { ElMessage } from "element-plus";
+const { toClipboard } = useClipboard();
 const props = defineProps({
   username: {
     type: String,
@@ -109,10 +114,20 @@ function scrollToBottom() {
 function showfulltext(index) {
   const spanrefs = spanref.value[index];
   if (spanrefs.parentNode.offsetWidth < spanrefs.offsetWidth) {
-    isTooltipVisible.value = true;
+    isTooltipVisible.value = index;
   } else {
-    isTooltipVisible.value = false;
+    isTooltipVisible.value = null;
   }
   console.log(isTooltipVisible.value);
 }
+const copy = async (val) => {
+  try {
+    await toClipboard(val);
+    ElMessage.success("复制成功");
+    // console.log("复制成功!");
+  } catch (e) {
+    ElMessage.error(e);
+    // console.log(e);
+  }
+};
 </script>
