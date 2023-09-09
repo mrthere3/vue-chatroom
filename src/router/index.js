@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import login from "@/components/views/login_compon.vue";
 import home from "@/components/views/home_page.vue";
 import { useAuthstor } from "@/store/store.js";
@@ -8,7 +8,8 @@ const routes = [
   { path: "/home", name: "home", component: home, meta: { requireAuth: true } },
 ];
 export const router = createRouter({
-  history: createWebHistory(),
+  mode: "hash",
+  history: createWebHashHistory(),
   routes: routes,
 });
 

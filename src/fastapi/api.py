@@ -39,4 +39,4 @@ async def records(request: Request):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=7999)
+    uvicorn.run(app, host="127.0.0.1", port=8888)
